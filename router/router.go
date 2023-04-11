@@ -14,6 +14,7 @@ func StartApp() *gin.Engine {
 	{
 		userRouter.POST("/register", controllers.UserRegistrasi)
 		userRouter.POST("/login", controllers.UserLogin)
+		userRouter.GET("/", controllers.GetUser)
 	}
 
 	productRouter := r.Group("/products")
@@ -21,6 +22,14 @@ func StartApp() *gin.Engine {
 		productRouter.Use(middlewares.Authentication())
 		productRouter.POST("/", controllers.CreateProduct)
 		productRouter.PUT("/:productId", middlewares.ProductAuthorization(), controllers.UpdateProduct)
+		productRouter.GET("/", middlewares.Authentication(), controllers.GetProduct)
+		productRouter.DELETE("/:productId", middlewares.ProductAuthorization(), controllers.DeleteProduct)
+	}
+
+	roleRouter := r.Group("/roles")
+	{
+		roleRouter.Use(middlewares.Authentication())
+		roleRouter.POST("/", controllers.AddRole)
 	}
 
 	return r
